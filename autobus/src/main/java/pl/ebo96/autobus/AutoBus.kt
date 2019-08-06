@@ -49,4 +49,28 @@ object AutoBus {
     fun <T : Any> postOnBg(key: String, value: T?) {
         events[key]?.postValue(value)
     }
+
+    /**
+     * Post immediately only when has active observers
+     */
+    @MainThread
+    fun <T : Any> postNow(key: String, value: T?) {
+        if (hasActiveObservers(key)) {
+            post(key, value)
+        }
+    }
+
+    /**
+     * Post on BG immediately only when has active observers
+     */
+    @WorkerThread
+    fun <T : Any> postNowOnBg(key: String, value: T?) {
+        if (hasActiveObservers(key)) {
+            postOnBg(key, value)
+        }
+    }
+
+    private fun hasActiveObservers(key: String): Boolean {
+        return events[key]?.hasActiveObservers() ?: false
+    }
 }
