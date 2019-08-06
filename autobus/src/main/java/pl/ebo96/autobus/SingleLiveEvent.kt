@@ -1,6 +1,7 @@
 package pl.ebo96.autobus
 
 import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -23,5 +24,11 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
     override fun setValue(t: T?) {
         mPending.set(true)
         super.setValue(t)
+    }
+
+    @WorkerThread
+    override fun postValue(value: T) {
+        mPending.set(true)
+        super.postValue(value)
     }
 }

@@ -1,5 +1,7 @@
 package pl.ebo96.autobus
 
+import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -24,6 +26,7 @@ object AutoBus {
         }
     }
 
+    @MainThread
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> observe(
         key: String,
@@ -37,7 +40,13 @@ object AutoBus {
         })
     }
 
+    @MainThread
     fun <T : Any> post(key: String, value: T?) {
         events[key]?.value = value
+    }
+
+    @WorkerThread
+    fun <T : Any> postOnBg(key: String, value: T?) {
+        events[key]?.postValue(value)
     }
 }
